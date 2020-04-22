@@ -24,7 +24,6 @@ class UserRepositoryImpl implements UserRepositoryCustom {
         this.operations = operations;
     }
 
-
     @Override
     public List<User> findUsersByAgeAndName(int age, String name) {
         Query searchQuery = new Query();
