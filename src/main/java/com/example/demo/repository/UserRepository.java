@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.core.query.Query;
-
 import java.util.List;
 
 public interface UserRepository extends MongoRepository<User, Integer>, UserRepositoryCustom{
@@ -14,7 +13,7 @@ public interface UserRepository extends MongoRepository<User, Integer>, UserRepo
 }
 
 interface UserRepositoryCustom {
-    public List<User> findUsersByAgeAndName(int age, String name);
+     List<User> findUsersByAgeAndName(int age, String name);
 }
 
 class UserRepositoryImpl implements UserRepositoryCustom {
@@ -31,7 +30,6 @@ class UserRepositoryImpl implements UserRepositoryCustom {
         Query searchQuery = new Query();
         searchQuery.addCriteria(Criteria.where("age").is(age));
         searchQuery.addCriteria(Criteria.where("name").is(name));
-        List<User> users = operations.find(searchQuery, User.class);
-        return users;
+        return operations.find(searchQuery, User.class);
     }
 }
