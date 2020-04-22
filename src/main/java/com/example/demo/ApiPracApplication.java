@@ -31,6 +31,7 @@ public class ApiPracApplication {
     CommandLineRunner runner(UserRepository userRepository){
         return args -> {
             System.out.println(userRepository.findByNameAndAddress("Jackson", "Earth").getAge());
+            System.out.println(userRepository.findUsersByAgeAndName(621,"kaka"));
         };
     }
 
