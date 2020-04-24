@@ -1,8 +1,14 @@
 package com.example.demo.resource_controller;
 
 import com.example.demo.document.User;
+import com.example.demo.exceptions.CouldNotSaveException;
 import com.example.demo.exceptions.UserNotFoundException;
+import com.example.demo.data_layer.UserDao;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
@@ -11,22 +17,28 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
-
-    private UserRepository userRepository;
+    @Autowired
     private UserModelAssembler userModelAssembler;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    UserRepository userRepository;
+    public UserController() {
+    }
 
-    public UserController(UserRepository userRepository, UserModelAssembler userModelAssembler) {
-        this.userRepository = userRepository;
-        this.userModelAssembler = userModelAssembler;
+    @GetMapping("/users/page")
+    public Page<User> findByPages(Pageable pageRequest) {
+        return userService.findByPage(pageRequest);
     }
 
     @GetMapping("/users")
     CollectionModel<EntityModel<User>> getAll() {
-        List<EntityModel<User>> users = userRepository.findAll().stream()
+        List<EntityModel<User>> users = userService.getAllUsers().stream()
                 .map(userModelAssembler::toModel)
                 .collect(Collectors.toList());
 
@@ -36,39 +48,38 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public EntityModel<User> getUser(@PathVariable int id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(Integer.toString(id)));
-        return userModelAssembler.toModel(user);
+        Optional<User> user = userService.getUser(id);
+        if (user.isPresent()) {
+            return userModelAssembler.toModel(user.get());
+        }
+        throw new UserNotFoundException(Integer.toString(id));
     }
 
     @PostMapping("/users")
     public ResponseEntity<?> postUser(@Valid @RequestBody User newUser) {
-        EntityModel<User> entityModel = userModelAssembler.toModel(userRepository.save(newUser));
-        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+        if(userService.saveUser(newUser) == UserDao.USER_CREATED) {
+            EntityModel<User> entityModel = userModelAssembler.toModel(newUser);
+            return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+        }
+        throw new CouldNotSaveException(Integer.toString(newUser.getId()));
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<?> replaceUser(@Valid @RequestBody User newUser, @PathVariable int id) {
-        User updatedUser = userRepository.findById(id)
-                .map(user -> {
-                    user.setName(newUser.getName());
-                    user.setAddress(newUser.getAddress());
-                    user.setAge(newUser.getAge());
-                    return userRepository.save(user);
-                })
-                .orElseGet(() -> {
-                    newUser.setId(id);
-                    return userRepository.save(newUser);
-                });
+    public ResponseEntity<?> updateUser(@Valid @RequestBody User newUser, @PathVariable int id) {
 
-        EntityModel<User> entityModel = userModelAssembler.toModel(userRepository.save(updatedUser));
-        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+        if (userService.updateUser(newUser)==UserDao.USER_CREATED){
+            EntityModel<User> entityModel = userModelAssembler.toModel(newUser);
+            return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+        }
+        else {
+            EntityModel<User> entityModel = userModelAssembler.toModel(newUser);
+            return ResponseEntity.ok().body(entityModel);
+        }
     }
 
     @DeleteMapping(value = "/users/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable int id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
+        if (userService.deleteUser(id) == UserDao.USER_DELETED) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();

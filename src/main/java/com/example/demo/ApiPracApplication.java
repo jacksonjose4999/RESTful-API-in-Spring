@@ -1,16 +1,11 @@
 package com.example.demo;
 
-import com.example.demo.document.User;
-import com.example.demo.repository.UserRepository;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import java.util.List;
 
 @SpringBootApplication
 public class ApiPracApplication {
@@ -28,14 +23,4 @@ public class ApiPracApplication {
             http.csrf().disable();
         }
     }
-
-    @Bean
-    CommandLineRunner runner(UserRepository userRepository){
-        return args -> {
-            List<User> users = userRepository.findUsersByAgeAndName(621,"kaka");
-            System.out.println(userRepository.findByNameAndAddress("Jackson", "Earth").getAge());
-            System.out.println(users.get(0).getId());
-        };
-    }
-
 }
