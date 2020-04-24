@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.support.PageableExecutionUtils;
 import java.util.List;
 
 public interface UserRepository extends MongoRepository<User, Integer>, UserRepositoryCustom, PagingAndSortingRepository<User, Integer> {
