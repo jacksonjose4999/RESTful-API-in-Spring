@@ -12,19 +12,23 @@ public class NameValidatorCheck implements  ConstraintValidator<NameValidator, S
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
+        constraintValidatorContext.disableDefaultConstraintViolation();
+
         if (s.equals("") || !isAlpha(s)) {
             String errorMessage = "";
 
             if (s.equals("")) {
-                errorMessage = errorMessage + "Name is empty \n";
+                errorMessage = "Name is empty";
+                constraintValidatorContext.buildConstraintViolationWithTemplate(errorMessage).addConstraintViolation();
             }
             if (stringContainsNumber(s)){
-                errorMessage = errorMessage + "Name contains numbers \n";
+                errorMessage = "Name contains numbers";
+                constraintValidatorContext.buildConstraintViolationWithTemplate(errorMessage).addConstraintViolation();
             }
             if (stringContainsSpecialChars(s)) {
-                errorMessage = errorMessage + "Name has special characters";
+                errorMessage = "Name has special characters";
+                constraintValidatorContext.buildConstraintViolationWithTemplate(errorMessage).addConstraintViolation();
             }
-            constraintValidatorContext.buildConstraintViolationWithTemplate(errorMessage).addConstraintViolation();
             return false;
         }
         return true;
