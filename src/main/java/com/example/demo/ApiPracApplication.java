@@ -13,14 +13,14 @@ public class ApiPracApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApiPracApplication.class, args);
     }
-
-    @Configuration
-    @EnableWebSecurity
-    public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable();
-        }
-    }
+//
+//    @Configuration
+//    @EnableWebSecurity
+//    public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
+//
+//        @Override
+//        protected void configure(HttpSecurity http) throws Exception {
+//            http.csrf().disable();
+//        }
+//    }
 }

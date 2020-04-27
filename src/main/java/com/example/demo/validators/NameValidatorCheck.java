@@ -1,8 +1,6 @@
 package com.example.demo.validators;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -14,7 +12,7 @@ public class NameValidatorCheck implements  ConstraintValidator<NameValidator, S
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if (s.equals("") || !isAlpha(s) || s ==null) {
+        if (s.equals("") || !isAlpha(s)) {
             String errorMessage = "";
 
             if (s.equals("")) {

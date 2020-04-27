@@ -4,7 +4,9 @@ import com.example.demo.data_layer.Dao;
 import com.example.demo.document.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +39,15 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<User> findByPage(Pageable pageRequest) {
+    public Page<User> findByPage(int page, int size) {
+        Pageable pageable ;
 
-        return userDao.getPage(pageRequest);
+//        if (sort == null) {
+//            pageable = PageRequest.of(page, size);
+//        }
+            pageable = PageRequest.of(page, size);
+
+        return userDao.getPage(pageable);
     }
 }
 

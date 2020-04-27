@@ -9,6 +9,7 @@ import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +29,14 @@ public class UserController {
     private UserService userService;
     @Autowired
     UserRepository userRepository;
-    public UserController() {
-    }
 
-    @GetMapping("/users/page")
-    public Page<User> findByPages(Pageable pageRequest) {
-        return userService.findByPage(pageRequest);
+    @GetMapping(value = "/users/page", params = {"page", "size"})
+    public List<User> findByPages(@RequestParam("page") int page, @RequestParam("size") int size) {
+         Page<User> usersPage = userService.findByPage(page, size);
+         if (page > usersPage.getTotalPages()){
+             throw new UserNotFoundException("Page: "+page);
+         }
+         return usersPage.getContent();
     }
 
     @GetMapping("/users")
@@ -41,7 +44,6 @@ public class UserController {
         List<EntityModel<User>> users = userService.getAllUsers().stream()
                 .map(userModelAssembler::toModel)
                 .collect(Collectors.toList());
-
         return new CollectionModel<>(users,
                 linkTo(methodOn(UserController.class).getAll()).withSelfRel());
     }
