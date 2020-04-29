@@ -11,6 +11,7 @@ public class User {
     @NotNull
     private int id;
     @NotBlank
+    @NotNull
     @Size(min = 1, max = 30, message = "Name should be lesser than 30 characters and not empty")
     @NameValidator
     private String name;
