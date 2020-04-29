@@ -2,25 +2,25 @@ package com.example.demo.document;
 import com.example.demo.validators.NameValidator;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import javax.validation.constraints.*;
 
+import javax.validation.GroupSequence;
+import javax.validation.constraints.*;
 
 @Document(collection = "users")
 public class User {
     @Id
-    @NotNull
+    @NotNull(groups = FirstOrder.class)
     private int id;
-    @NotBlank
-    @NotNull
-    @Size(min = 1, max = 30, message = "Name should be lesser than 30 characters and not empty")
-    @NameValidator
+    @NotNull(groups = FirstOrder.class)
+    @Size(min = 1, max = 30, message = "Name should be lesser than 30 characters and not empty", groups = SecondOrder.class)
+    @NameValidator(groups = ThirdOrder.class)
     private String name;
-    @NotBlank
+    @NotBlank(groups = FirstOrder.class)
     @Size(min = 1, max = 100, message = "Address should be non empty and less than 100 characters")
     private String address;
-    @Min(value = 0, message = "Age cannot be negative")
-    @Max(150)
-    @NotNull
+    @Min(value = 0, message = "Age cannot be negative", groups = SecondOrder.class)
+    @Max(value = 150, groups = SecondOrder.class)
+    @NotNull(groups = FirstOrder.class)
     private int age;
 
     public User(int id, String name, String address, int age) {
@@ -61,4 +61,14 @@ public class User {
     public void setAge(int age) {
         this.age = age;
     }
+
+    interface FirstOrder { }
+
+    interface SecondOrder { }
+
+    interface ThirdOrder {}
+
+    @GroupSequence({FirstOrder.class, SecondOrder.class, ThirdOrder.class})
+    public interface OrderedChecks { }
 }
+

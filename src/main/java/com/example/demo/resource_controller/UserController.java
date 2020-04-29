@@ -15,6 +15,7 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<?> postUser(@Valid @RequestBody User newUser) {
+    public ResponseEntity<?> postUser(@Validated(User.OrderedChecks.class) @RequestBody User newUser) {
         if(userService.saveUser(newUser) == UserDao.USER_CREATED) {
             EntityModel<User> entityModel = userModelAssembler.toModel(newUser);
             return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
