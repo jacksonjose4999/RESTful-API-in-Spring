@@ -1,4 +1,4 @@
-package com.example.demo.services;
+package com.example.demo.security_layer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,12 +25,10 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
-
-        String token= httpServletRequest.getHeader(AUTHORIZATION);
-        token= StringUtils.removeStart(token, "Bearer").trim();
+        String token = httpServletRequest.getHeader(AUTHORIZATION);
+        token = StringUtils.removeStart(token, "Bearer").trim();
         Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(token, token);
         return getAuthenticationManager().authenticate(requestAuthentication);
-
     }
 
     @Override

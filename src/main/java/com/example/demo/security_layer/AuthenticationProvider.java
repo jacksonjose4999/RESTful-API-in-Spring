@@ -1,5 +1,6 @@
-package com.example.demo.services;
+package com.example.demo.security_layer;
 
+import com.example.demo.services.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -17,14 +18,11 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     LoginService loginService;
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails,
-                                                  UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
-            throws AuthenticationException {
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
     }
 
     @Override
-    protected UserDetails retrieveUser(String userName, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
-            throws UsernameNotFoundException {
+    protected UserDetails retrieveUser(String userName, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws UsernameNotFoundException {
         Object token = usernamePasswordAuthenticationToken.getCredentials();
         try {
             return (UserDetails) Optional.of(token).map(String::valueOf).flatMap(loginService::findByToken).get();

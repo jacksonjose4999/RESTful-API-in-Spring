@@ -24,7 +24,6 @@ public class ApiPracApplication {
             loginRepository.save(new LoginInfo("user", "pass", 0));
             loginRepository.save(new LoginInfo("admin", "pass", 1));
         }
-
     }
 }
 

@@ -1,7 +1,6 @@
-package com.example.demo.config;
+package com.example.demo.security_layer;
 
-import com.example.demo.services.AuthenticationFilter;
-import com.example.demo.services.AuthenticationProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,12 +26,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/users/**"));
-    AuthenticationProvider provider;
 
-    public SecurityConfiguration(final AuthenticationProvider authenticationProvider) {
-        super();
-        this.provider = authenticationProvider;
-    }
+    @Autowired
+    AuthenticationProvider provider;
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) {
