@@ -3,10 +3,10 @@ package com.example.demo.document;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "customer")
+@Document(collection = "loginInfo")
 public class LoginInfo{
-    static int ADMIN = 1;
-    static int USER = 0;
+    public static final int ADMIN = 1;
+    public static final int USER = 0;
     @Id
     String username;
     String password;
@@ -25,22 +25,6 @@ public class LoginInfo{
 
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public static int getADMIN() {
-        return ADMIN;
-    }
-
-    public static void setADMIN(int ADMIN) {
-        LoginInfo.ADMIN = ADMIN;
-    }
-
-    public static int getUSER() {
-        return USER;
-    }
-
-    public static void setUSER(int USER) {
-        LoginInfo.USER = USER;
     }
 
     public String getUsername() {
